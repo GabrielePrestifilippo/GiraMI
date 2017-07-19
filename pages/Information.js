@@ -14,16 +14,14 @@ export default class Liberty extends React.Component {
 
     componentWillMount() {
         this.state = {};
-        if (this.props && this.props.navigation && this.props.navigation.state
-            && this.props.navigation.state.params && this.props.navigation.state.params.state)
-            Object.assign(this.state, this.props.navigation.state.params.state);
+        if (this.props && this.props.state)
+            Object.assign(this.state, this.props.state);
     }
 
     componentWillUnmount() {
         this.state = {};
-        if (this.props && this.props.navigation && this.props.navigation.state
-            && this.props.navigation.state.params && this.props.navigation.state.params.state)
-            Object.assign(this.state, this.props.navigation.state.params.state);
+        if (this.props && this.props.state)
+            Object.assign(this.state, this.props.state);
     }
 
     componentDidMount() {
@@ -35,12 +33,6 @@ export default class Liberty extends React.Component {
 
         return (
             <View style={styles.container}>
-                <View style={styles.header} navigation={this.state}>
-                    <Icon style={styles.leftIcon} name={'chevron-left'}
-                          onPress={ () => navigation.navigate('Home', {state: this.state})}/>
-                    <Text style={styles.centerText}>GiraMi</Text>
-                    <Text style={styles.rightIcon}/>
-                </View>
                 <ScrollView style={styles.textContainer}>
                     <Text style={styles.text}>{I18n.t('Information')} </Text>
                 </ScrollView>

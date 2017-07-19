@@ -7,19 +7,22 @@ import I18n from "../components/Languages";
 const Permissions = require('react-native-permissions');
 
 
-export default class Map extends React.Component {
+class Map extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            messagesReceivedFromWebView: null,
+            message: "Null",
+            myMessage: "not set yet",
+            myPoint: {info: null},
+            questAvailable: false,
+            visible: false,
+        };
+    }
 
 
-    state = {
-        messagesReceivedFromWebView: null,
-        message: "Null",
-        myMessage: "not set yet",
-        myPoint: {info: null},
-        questAvailable: false,
-        visible: false,
-    };
-
-    navigation = this.props.navigation;
 
 
     _requestPermission() {
@@ -64,15 +67,15 @@ export default class Map extends React.Component {
         var self = this;
         points.some(function (p, index) { //check if we are close to a point and return it
             //if(self.props.history && self.props.history[index + 1] == undefined){
-                var d = getDistance(p.lat, p.lon, lastPosition.latitude, lastPosition.longitude);
-                if (d < 100) {//limit distance
-                    point = p;
-                    self.setState({myPoint: p});
-                    return;
-                } else {
-                    self.setState({questAvailable: false});
-                }
-           // }
+            var d = getDistance(p.lat, p.lon, lastPosition.latitude, lastPosition.longitude);
+            if (d < 100) {//limit distance
+                point = p;
+                self.setState({myPoint: p});
+                return;
+            } else {
+                self.setState({questAvailable: false});
+            }
+            // }
         });
 
         if (point) {
@@ -121,7 +124,7 @@ export default class Map extends React.Component {
         this.watchID = navigator.geolocation.watchPosition((position) => {
                 this.positionChange(position);
             }, (error) => console.log(JSON.stringify(error)),
-            {enableHighAccuracy: false, distanceFilter: 1, timeout: 1000});
+            {enableHighAccuracy: true, distanceFilter: 1, timeout: 1000});
 
         setTimeout(() => this.props.onLoaded(), 3000);
 
@@ -202,6 +205,7 @@ export default class Map extends React.Component {
         )
     }
 }
+export default Map;
 
 const styles = StyleSheet.create({
     container: {

@@ -1,80 +1,131 @@
-import React from "react";
-import {AppRegistry, Text, View, Button, ToastAndroid} from "react-native";
-import {StackNavigator, TabNavigator} from "react-navigation";
-import Home from "./pages/Home";
-import Game from "./pages/Game";
-import Information from "./pages/Information";
-import Places from "./pages/Places";
-import Quest from "./pages/Quest";
-import InfoPlace from "./pages/InfoPlace";
-import I18n from "./components/Languages";
+import React, {
+    Component,
+} from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import Loading from './components/Loading';
+import {
+    Scene,
+    Router,
+    Actions,
+    Reducer,
+    ActionConst,
+} from 'react-native-router-flux';
 
+import TabView from './components/TabView';
+import TabIcon from './components/TabIcon';
+import Places from './pages/Places';
+import Game from './pages/Game';
+import Information from './pages/Information';
+import InfoPlace from './pages/InfoPlace';
 
-const GiraMi = StackNavigator({
-    Home: {
-        screen: Home,
-        navigationOptions: {
-            header: null
-        }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1, backgroundColor: 'transparent', justifyContent: 'center',
+        alignItems: 'center',
     },
-    City: {
-        screen: Game,
-        navigationOptions: {
-            header: null
-        }
+    tabBarStyle: {
+        backgroundColor: '#dd1834',
     },
-    Information: {
-        screen: Information,
-        navigationOptions: {
-            header: null
-        }
+    tabBarSelectedItemStyle: {
+        backgroundColor: '#ddd',
     },
-    Places: {
-        screen: Places,
-        navigationOptions: {
-            header: null
-        }
-    },
-    Quest: {
-        screen: Quest,
-        navigationOptions: {
-            header: null
-        }
-    },
-    InfoPlace: {
-        screen: InfoPlace,
-        navigationOptions: {
-            header: null
-        }
+    indicator: {
+        backgroundColor: 'white',
     }
-}, {
-    tabBarPosition: "bottom"
 });
-const defaultGetStateForAction = GiraMi.router.getStateForAction;
 
-GiraMi.router.getStateForAction = (action, state) => {
-    var self = this;
-    if (state && action.type === 'Navigation/BACK') {
-        const routes = state.routes;
-        if (this.alreadyPressed) {
-            return null;
-        } else if (state.routes[state.routes.length - 1].routeName == "Home") {
-            this.alreadyPressed = true;
-            ToastAndroid.showWithGravity(I18n.t('closeApp'), ToastAndroid.SHORT, ToastAndroid.CENTER);
-            setTimeout(() => {
-                this.alreadyPressed = false;
-            }, 3000)
-
-        }
-        return {
-            state,
-            routes,
-            index: state.index,
-        };
-    }
-    return defaultGetStateForAction(action, state);
+const reducerCreate = params => {
+    const defaultReducer = new Reducer(params);
+    return (state, action) => {
+        console.log('ACTION:', action);
+        return defaultReducer(state, action);
+    };
 };
+const getSceneStyle = () => ({
+    backgroundColor: 'white',
+    shadowOpacity: 1,
+    shadowRadius: 3,
+});
 
 
-console.ignoredYellowBox = ['Warning: View.propTypes'];
-AppRegistry.registerComponent('GiraMi', () => GiraMi);
+const App = () => {
+    this.state = {init: true};
+
+    updateState = function (state) {
+        this.state = state;
+    };
+
+    return (
+        <Router createReducer={reducerCreate} getSceneStyle={getSceneStyle}>
+            <Scene key="drawer" drawer contentComponent={TabView}>
+                <Scene key="Loading" updateState={updateState.bind(this)} hideNavBar hideTabBar component={Loading}
+                       title="Loading" initial/>
+
+                <Scene
+                    tabBarPosition={'bottom'}
+                    key="Home"
+                    gestureEnabled={false}
+                    tabs
+                    lazy
+                    tabBarStyle={styles.tabBarStyle}
+                    activeBackgroundColor='#ddd'
+                    indicatorStyle={ styles.indicator }
+
+                >
+                    <Scene
+                        key="City"
+                        title="City"
+                        tabBarLabel="City"
+                        icon={TabIcon}
+                        titleStyle={{color: 'white'}}
+                        navigationBarStyle={{backgroundColor: '#dd1834'}}
+
+                    >
+                        <Scene
+                            key="Game"
+                            component={Game}
+                            title="City"
+                            updateState={updateState.bind(this)}
+                            lazy
+                            rightTitle="Close"
+                        />
+                    </Scene>
+                    <Scene key="Points" titleStyle={{color: 'white'}} navigationBarStyle={{backgroundColor: '#dd1834'}}
+                           title="Points" icon={TabIcon}>
+                        <Scene
+                            key="pointsPage"
+                            component={Places}
+                            title="Points"
+                            updateState={updateState.bind(this)}
+                            type={ActionConst.REFRESH}
+                            state={this.state}
+                            on={() => {
+                                Actions.refresh({state: this.state})
+                            }}
+                        />
+                        <Scene
+                            key="infoPlace"
+                            component={InfoPlace}
+                            leftTitle="Cancel" onLeft={Actions.pop}
+                            title="Point"
+                        />
+                    </Scene>
+                    <Scene
+                        key="Info"
+                        titleStyle={{color: 'white'}}
+                        navigationBarStyle={{backgroundColor: '#dd1834'}}
+                        component={Information}
+                        title="Info"
+                        icon={TabIcon}/>
+
+                </Scene>
+            </Scene>
+        </Router>
+    );
+}
+
+export default App;

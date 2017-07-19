@@ -1,7 +1,7 @@
 import React from "react";
 import {AsyncStorage, Text, View, Image, ScrollView, StyleSheet} from "react-native";
 import I18n from "../components/Languages";
-
+import {Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {points} from "../components/Helper";
 
@@ -9,13 +9,13 @@ import {points} from "../components/Helper";
 export default class InfoPlace extends React.Component {
     constructor(props) {
         super(props);
-        this.indexPoint = this.props.navigation.state.params.point;
+        this.indexPoint = this.props.point;
     };
 
 
     componentWillMount() {
         this.state = {};
-        Object.assign(this.state, this.props.navigation.state.params.state);
+        Object.assign(this.state, this.props.state);
     }
 
 
@@ -25,8 +25,14 @@ export default class InfoPlace extends React.Component {
     componentDidMount() {
     }
 
+    shouldComponentUpdate() {
+        this.indexPoint = this.props.point;
+        return true;
+    }
+
 
     renderQuestion() {
+        this.indexPoint = this.props.point;
         if (I18n.t('questions')[this.indexPoint + 1]["q"]) {
             return (<View
                 style={styles.textContainerQuestion}>
@@ -38,21 +44,13 @@ export default class InfoPlace extends React.Component {
     }
 
     getImage() {
-
         return points[this.indexPoint].image;
 
     }
 
     render() {
         return (
-            <View
-                style={styles.container}>
-                <View style={styles.header} navigation={this.state}>
-                    <Icon style={styles.leftIcon} name={'chevron-left'}
-                          onPress={ () => navigation.navigate('Places', {state: this.state})}/>
-                    <Text style={styles.centerText}>GiraMi</Text>
-                    <Text style={styles.rightIcon}/>
-                </View>
+            <View style={styles.container}>
                 <View style={styles.place}>
                     <Image resizeMode='cover' source={this.getImage()} style={styles.frame}>
                     </Image>

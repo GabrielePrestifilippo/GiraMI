@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import I18n from "../components/Languages";
 export default class Game extends React.Component {
 
-    navigation = this.props.navigation;
 
     componentWillMount() {
         this.state = {
@@ -22,9 +21,9 @@ export default class Game extends React.Component {
             iconLeft: 'chevron-left',
             surpriseQuest: false,
         };
-        if (this.props && this.props.navigation && this.props.navigation.state
-            && this.props.navigation.state.params && this.props.navigation.state.params.state)
-            Object.assign(this.state, this.props.navigation.state.params.state);
+        this.props.updateState(this.state);
+        if (this.props && this.props.state)
+            Object.assign(this.state, this.props.state);
     }
 
     componentDidMount() {
@@ -43,6 +42,7 @@ export default class Game extends React.Component {
     startQuest = (point) => {
         if (point) {
             this.setState({questStarted: point});
+            this.props.updateState(this.state);
         }
 
     };
@@ -51,22 +51,23 @@ export default class Game extends React.Component {
     hideLoading() {
         this.setState({loadingGame: false});
     }
-    ;
+
 
     onAnswer(answer) {
         this.state.history[this.state.questStarted.question] = answer;
+        this.props.updateState(this.state);
     }
-    ;
+
 
     onCloseButton() {
         this.setState({questStarted: false});
     }
-    ;
+
 
     onNavigate() {
-        navigation.navigate('Places', {state: this.state});
+        Actions.Places({state: this.state});
     }
-    ;
+
 
     renderQuestOrMap = () => {
         if (this.state.questStarted) {
@@ -127,13 +128,6 @@ export default class Game extends React.Component {
                 <Spinner color="#dd1834" overlayColor="rgba(255, 255, 255, 1)" visible={this.state.loadingGame}
                          textContent={"Loading..."}
                          textStyle={{color: '#dd1834'}}/>
-
-                <View style={styles.header} navigation={this.state}>
-                    <Icon style={styles.leftIcon} name={'chevron-left'}
-                          onPress={ () => navigation.navigate('Home', {state: this.state})}/>
-                    <Text style={styles.centerText}>GiraMi</Text>
-                    {this.rightButton()}
-                </View>
 
                 <View style={{
                     flex: 1,

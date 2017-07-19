@@ -3,40 +3,33 @@ import {Text, View, ScrollView, StyleSheet} from "react-native";
 import Icon from 'react-native-vector-icons/EvilIcons';
 import QuestPreview from '../components/QuestPreview';
 import {points} from "../components/Helper";
+import {Actions} from 'react-native-router-flux';
 
 export default class Info extends React.Component {
 
 
     constructor(props) {
         super(props);
-
     };
 
+    shouldComponentUpdate() {
+        return true;
+    }
 
     componentWillUnmount() {
         this.state = {};
-        //clearInterval(this.interv);
-        if (this.props && this.props.navigation && this.props.navigation.state
-            && this.props.navigation.state.params && this.props.navigation.state.params.state)
-            Object.assign(this.state, this.props.navigation.state.params.state);
     }
 
     componentWillMount() {
         this.state = {};
-        if (this.props && this.props.navigation && this.props.navigation.state
-            && this.props.navigation.state.params && this.props.navigation.state.params.state)
-            Object.assign(this.state, this.props.navigation.state.params.state);
-        /*
-         this.interv=setInterval(() => {
-         this.setState({date: new Date});
-         }, 10000);
-         */
+        if (this.props && this.props.state)
+            Object.assign(this.state, this.props.state);
     }
 
 
     onPress(index, completed) {
         if (completed == "true") {
-            navigation.navigate('InfoPlace', {state: this.state, point: index});
+            Actions.infoPlace({state: this.state, point: index});
         }
     }
 
@@ -45,7 +38,7 @@ export default class Info extends React.Component {
         var places = points.map(function (point, index) {
             var completed;
             var image = point.image;
-            if (self.state.history) {
+            if (self.props.state.history) {
                 if (self.state.history[index + 1] || self.state.history[index + 1] == false) {
                     completed = 'true';
                 } else {
@@ -67,12 +60,7 @@ export default class Info extends React.Component {
 
         return (
             <View style={styles.container}>
-                <View style={styles.header} navigation={this.state}>
-                    <Icon style={styles.leftIcon} name={'chevron-left'}
-                          onPress={ () => navigation.navigate('Home', {state: this.state})}/>
-                    <Text style={styles.centerText}>GiraMi</Text>
-                    <Text style={styles.rightIcon}/>
-                </View>
+
                 <ScrollView style={styles.quest}>
                     {this.renderPlaces()}
                 </ScrollView>
