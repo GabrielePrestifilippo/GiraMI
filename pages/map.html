@@ -1,0 +1,31 @@
+<html>
+<head>
+    <link rel="stylesheet" href="../external/leaflet.css"/>
+    <link rel="stylesheet" href="../external/main.css"/>
+    <script src="../external/leaflet.js"></script>
+    <script src="../external/jquery.min.js"></script>
+    <script>
+        $( window ).on( "load", function () {
+            setTimeout(function(){
+               window.postMessage('{"ready":true}', '*');
+               map.invalidateSize();
+            },500)
+        });
+
+    </script>
+</head>
+<body style="height:100%; backgroundColor:'transparent';">
+
+
+<div style="
+    padding: 15px;
+    height: 100%;
+">
+    <div id="map">
+    </div>
+</div>
+
+<script src="webview.js"></script>
+
+</body>
+</html>

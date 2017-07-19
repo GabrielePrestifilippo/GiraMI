@@ -1,0 +1,42 @@
+body, html {
+    margin: 0px;
+    overflow: hidden;
+    width: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* reset */
+}
+
+
+.leaflet-control-attribution.leaflet-control {
+    pointer-events: none;
+    background-color:transparent;
+    color: #ccc;
+}
+
+.leaflet-control-attribution a {
+    text-decoration: none;
+    color: #ccc;
+    background-color:transparent;
+}
+
+#map {
+    height: 100%;
+    margin-bottom: 60px;
+    margin-top: 10px;
+}
+
+.linkMap{
+    text-decoration: underline;
+    font-size: 16px;
+    color: #19a837 !important;
+}
+.thumb{
+    width:90%;
+    max-width:200px;
+    max-height: 200px;
+    padding:2px;
+}
