@@ -1,5 +1,5 @@
 import React from "react";
-import {AsyncStorage, Text, View, Image, ScrollView, StyleSheet} from "react-native";
+import {AsyncStorage, Text, View, Image, ScrollView, StyleSheet, BackHandler} from "react-native";
 import I18n from "../components/Languages";
 import {Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/EvilIcons';
@@ -13,14 +13,15 @@ export default class InfoPlace extends React.Component {
     };
 
 
+
+
     componentWillMount() {
         this.state = {};
+
         Object.assign(this.state, this.props.state);
     }
 
 
-    componentWillUnmount() {
-    }
 
     componentDidMount() {
     }
@@ -132,9 +133,9 @@ const styles = StyleSheet.create({
         position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor:'#dd1834',
+        backgroundColor: '#dd1834',
         justifyContent: 'space-between',
-        elevation:2
+        elevation: 2
     },
     leftIcon: {
         fontSize: 38,

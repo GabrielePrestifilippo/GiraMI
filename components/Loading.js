@@ -4,6 +4,7 @@ import {
     AsyncStorage,
     View,
     StyleSheet,
+    BackHandler
 
 } from "react-native";
 
@@ -33,12 +34,24 @@ class Loading extends React.Component {
                 this.positionChange(position);
             }, (error) => console.log(JSON.stringify(error)),
             {enableHighAccuracy: false, distanceFilter: 1, timeout: 1000});
+        BackHandler.addEventListener('hardwareBackPress', () => this.backAndroid()) // Listen for the hardware back button on Android to be pressed
 
 
     }
 
+
+    backAndroid () {
+        console.log(Actions.state);
+        if (Actions.state.index < 1) {
+            return false;
+        }
+        Actions.pop() // Return to previous screen
+        return true // Needed so BackHandler knows that you are overriding the default action and that it should not close the app
+    }
     componentWillUnmount() {
         navigator.geolocation.clearWatch(this.watchID);
+        BackHandler.removeEventListener('hardwareBackPress', () => this.backAndroid()) // Remove listener
+
     }
 
 
@@ -60,7 +73,7 @@ class Loading extends React.Component {
     };
 
     getHistory = async () => {
-        var self=this;
+        var self = this;
         await AsyncStorage.getItem('history', (err, value) => {
             if (value !== null) {
                 var history = JSON.parse(value);
@@ -71,7 +84,7 @@ class Loading extends React.Component {
                 this.setState({history: history});
                 this.setState({loadingHome: false});
             }
-
+            self.props.updateState(this.state);
             Actions.Game({state: self.state});
 
         });
@@ -104,7 +117,7 @@ class Loading extends React.Component {
         if (!this.state.position) {
             var initialPosition = JSON.stringify(position);
             this.setState({position: initialPosition});
-            this.props.updateState(this.state);
+            self.props.updateState(this.state);
         }
 
         var lastPosition = position.coords;
@@ -123,7 +136,7 @@ class Loading extends React.Component {
                 } else {
                     self.setState({questAvailable: false});
                 }
-                this.props.updateState(this.state);
+                self.props.updateState(this.state);
             }
         });
     };
@@ -143,12 +156,7 @@ class Loading extends React.Component {
     render() {
 
         return (
-            <View><View style={styles.buttons}>
-                <HomeButton text="City" onPress={this.onPress.bind(this, "City")}/>
-                <HomeButton text="Places" onPress={this.onPress.bind(this, "Places")}/>
-                <HomeButton text="Info" onPress={this.onPress.bind(this, "Information")}/>
-
-            </View></View>
+            <View></View>
         );
     }
 

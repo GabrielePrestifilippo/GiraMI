@@ -39,7 +39,7 @@ export default class Info extends React.Component {
             var completed;
             var image = point.image;
             if (self.props.state.history) {
-                if (self.state.history[index + 1] || self.state.history[index + 1] == false) {
+                if (self.props.state.history[index + 1] || self.props.state.history[index + 1] == false) {
                     completed = 'true';
                 } else {
                     completed = 'false';

@@ -8,6 +8,10 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import I18n from "../components/Languages";
 export default class Game extends React.Component {
 
+    constructor(props) {
+        super(props);
+        console.log(props);
+    }
 
     componentWillMount() {
         this.state = {

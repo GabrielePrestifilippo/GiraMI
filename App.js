@@ -15,13 +15,12 @@ import {
     ActionConst,
 } from 'react-native-router-flux';
 
-import TabView from './components/TabView';
 import TabIcon from './components/TabIcon';
 import Places from './pages/Places';
 import Game from './pages/Game';
 import Information from './pages/Information';
 import InfoPlace from './pages/InfoPlace';
-
+import Icon from 'react-native-vector-icons/EvilIcons';
 const styles = StyleSheet.create({
     container: {
         flex: 1, backgroundColor: 'transparent', justifyContent: 'center',
@@ -35,7 +34,13 @@ const styles = StyleSheet.create({
     },
     indicator: {
         backgroundColor: 'white',
-    }
+    },
+    leftIcon: {
+        fontSize: 38,
+        color: '#ffffff',
+        padding: 10,
+        alignSelf: 'flex-start'
+    },
 });
 
 const reducerCreate = params => {
@@ -53,75 +58,80 @@ const getSceneStyle = () => ({
 
 
 const App = () => {
-    this.state = {init: true};
 
+    this.state = {};
     updateState = function (state) {
         this.state = state;
     };
-
+    leftButton = function () {
+        return (
+            <Icon style={styles.leftIcon} name={'chevron-left'}
+                  onPress={ () => Actions.pop}
+            />);
+    }
     return (
         <Router createReducer={reducerCreate} getSceneStyle={getSceneStyle}>
-            <Scene key="drawer" drawer contentComponent={TabView}>
-                <Scene key="Loading" updateState={updateState.bind(this)} hideNavBar hideTabBar component={Loading}
-                       title="Loading" initial/>
+            <Scene key="root"                    navigationBarStyle={{backgroundColor: '#dd1834'}}
+                   tabBarStyle={styles.tabBarStyle}>
 
+                <Scene key="Loading" updateState={updateState.bind(this)} back component={Loading}
+                       title="Loading" hideNavBar initial/>
                 <Scene
                     tabBarPosition={'bottom'}
                     key="Home"
                     gestureEnabled={false}
                     tabs
                     lazy
-                    tabBarStyle={styles.tabBarStyle}
+                    hideNavBar
                     activeBackgroundColor='#ddd'
                     indicatorStyle={ styles.indicator }
-
                 >
                     <Scene
-                        key="City"
+                        key="Game"
                         title="City"
                         tabBarLabel="City"
                         icon={TabIcon}
+                        lazy
+                        component={Game}
+                        updateState={updateState.bind(this)}
                         titleStyle={{color: 'white'}}
-                        navigationBarStyle={{backgroundColor: '#dd1834'}}
-
                     >
-                        <Scene
-                            key="Game"
-                            component={Game}
-                            title="City"
-                            updateState={updateState.bind(this)}
-                            lazy
-                            rightTitle="Close"
-                        />
+
                     </Scene>
-                    <Scene key="Points" titleStyle={{color: 'white'}} navigationBarStyle={{backgroundColor: '#dd1834'}}
+                    <Scene key="Points" titleStyle={{color: 'white'}}
                            title="Points" icon={TabIcon}>
                         <Scene
                             key="pointsPage"
                             component={Places}
                             title="Points"
-                            updateState={updateState.bind(this)}
+                            lazy
                             type={ActionConst.REFRESH}
                             state={this.state}
                             on={() => {
                                 Actions.refresh({state: this.state})
                             }}
+
                         />
                         <Scene
                             key="infoPlace"
                             component={InfoPlace}
-                            leftTitle="Cancel" onLeft={Actions.pop}
+
+                            renderLeftButton={() => {
+                                leftButton()
+                                //yarn add https://github.com/aksonov/react-native-router-flux.git#d4fff5036653e723a697f8ab28d0ce9ee387ffb8
+
+                            }}
+
+                            leftButtonStyle={{color:"#fff"}}
                             title="Point"
                         />
                     </Scene>
                     <Scene
                         key="Info"
                         titleStyle={{color: 'white'}}
-                        navigationBarStyle={{backgroundColor: '#dd1834'}}
                         component={Information}
                         title="Info"
                         icon={TabIcon}/>
-
                 </Scene>
             </Scene>
         </Router>
